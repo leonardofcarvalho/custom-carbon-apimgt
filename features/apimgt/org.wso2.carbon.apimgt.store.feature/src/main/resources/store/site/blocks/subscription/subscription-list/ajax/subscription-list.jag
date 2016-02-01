@@ -25,7 +25,10 @@ include("/jagg/jagg.jag");
                 error:true,
                 message: msg.error.invalidInputs(validation_errors)
             });        
-    }else if (action == "getAllSubscriptions") {
+    } else if (action == "generateSdk"){
+        window.open("wso2.com");
+    }
+    else if (action == "getAllSubscriptions") {
         /*
          This will be called when the user calls listAllSubscription via the Rest API.
         */

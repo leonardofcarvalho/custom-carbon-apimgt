@@ -11,6 +11,19 @@ function showHideKeys(){
             });
         }
     }
+function generateAndroidSdk() {
+    //window.open("wso2.com");
+    jagg.post("/site/blocks/subscription/subscription-list/ajax/subscription-list.jag", {
+        action:"generateSdk",
+        type:"android",
+    }, function (result) {
+        if (!result.error) {
+            location.reload();
+        } else {
+            jagg.message({content:result.message,type:"error"});
+        }
+    }, "json");
+}
 
 $(document).ready(function () {
 
