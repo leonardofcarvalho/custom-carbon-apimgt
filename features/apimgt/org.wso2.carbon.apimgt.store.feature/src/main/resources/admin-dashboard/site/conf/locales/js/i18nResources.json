@@ -1,0 +1,14 @@
+{
+    "errorMsgs":{
+        "login":"Unable to log you in!"
+    },
+    "analyticsConfigSaving" : {
+        "inProgress" : "Saving Configurations...",
+        "success" : "Configurations Saved!",
+        "error" : "Error occurred while saving configurations!"
+    },
+    "confirmMsgs":{
+        "tierDeleteTitle" : "Confirm Deletion",
+        "tierDeleteConfirmMsg" : "Tier deletion might affect current subscriptions. Are you sure you want to delete?"
+  }
+}
