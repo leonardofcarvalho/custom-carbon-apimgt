@@ -45,8 +45,11 @@ include("/jagg/jagg.jag");
         else {
             language="android";
         }
+
+        var groupId = session.get("groupId");
         mod = jagg.module("subscription");
-        result = mod.generateClientSdk(selectedApp,language);
+        username = user.username;
+        result = mod.generateClientSdk(selectedApp,language,username,groupId);
     }
     else if (action == "getAllSubscriptions") {
         /*

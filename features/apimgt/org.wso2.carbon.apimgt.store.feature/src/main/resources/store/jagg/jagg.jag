@@ -668,7 +668,7 @@ var jagg = jagg || (function () {
             outputs = inputs;
         } else {
             outputs = {};
-        }
+        }render
         init = initializer(name);
         if (init.postInitialize) {
             init.postInitialize(inputs, outputs);

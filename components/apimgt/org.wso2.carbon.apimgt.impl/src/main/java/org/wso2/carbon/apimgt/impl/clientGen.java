@@ -1,5 +1,6 @@
 package org.wso2.carbon.apimgt.impl;
 
+import org.apache.openjpa.lib.log.Log;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import java.io.FileNotFoundException;
@@ -11,7 +12,9 @@ import java.io.UnsupportedEncodingException;
  */
 public class clientGen {
 
-    public static void getMasterSwagger(){
+    public static void sdkGeneration(String appId, String sdkLanguage){
+        System.out.println(sdkLanguage);
+        Log.INFO(sdkLanguage);
         //APIUtil.getSwagger20DefinitionFilePath();
     }
 }
