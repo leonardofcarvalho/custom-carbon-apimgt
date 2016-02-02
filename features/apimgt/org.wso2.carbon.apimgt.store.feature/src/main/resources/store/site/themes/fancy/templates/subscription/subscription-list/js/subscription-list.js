@@ -15,7 +15,8 @@ function generateAndroidSdk() {
     //window.open("wso2.com");
     jagg.post("/site/blocks/subscription/subscription-list/ajax/subscription-list.jag", {
         action:"generateSdk",
-        type:"android",
+        selectedApp:"1234",
+        language:"android",
     }, function (result) {
         if (!result.error) {
             location.reload();

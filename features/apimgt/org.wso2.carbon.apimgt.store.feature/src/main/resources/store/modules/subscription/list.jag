@@ -13,7 +13,7 @@ var getAllSubscriptions = function (username, selectedAppName, startSubIndex, en
             error:false,
             result:result
         };
-    } catch (e) {
+    } catch (e) {username
         log.error(e);
         return {
             error:e,
@@ -70,4 +70,10 @@ var getAPISubscriptionsForApplication = function (username, appName) {
     }
 };
 
+var generateClientSdk = function (appId,language){
+    window.open("wso2.com");
+    return {
+        error:false
+    };
+};
 %>
