@@ -45,7 +45,6 @@
                         if(request.getParameter('selectedApp') == app.name){
                             selectedApp = app;
                             session.put('selectedApp',app.name);
-                       
                             %> selected="selected" <%
                         }
                     }
@@ -53,7 +52,7 @@
             <% } %>
         </select>
          <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("js/subscription-list.js"))%>"></script>
-         <button type="button" onclick="generateAndroidSdk()">Android SDK!</button>
+         <button type="button" onclick="generateAndroidSdk('<%=selectedApp.name%>')">Android SDK!</button>
         <%
             if(lenI != 0 ){
         %>

@@ -11,11 +11,11 @@ function showHideKeys(){
             });
         }
     }
-function generateAndroidSdk() {
+function generateAndroidSdk(app) {
     //window.open("wso2.com");
     jagg.post("/site/blocks/subscription/subscription-list/ajax/subscription-list.jag", {
         action:"generateSdk",
-        selectedApp:"1234",
+        selectedApp:app,
         language:"android",
     }, function (result) {
         if (!result.error) {

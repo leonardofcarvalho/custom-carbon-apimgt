@@ -507,7 +507,7 @@ public abstract class AbstractAPIManager implements APIManager {
         return manager;
     }
 
-    private Registry getRegistry(APIIdentifier identifier, String apiPath)
+    protected Registry getRegistry(APIIdentifier identifier, String apiPath)
             throws APIManagementException {
         Registry passRegistry;
         try {
