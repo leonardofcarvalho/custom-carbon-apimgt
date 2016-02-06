@@ -67,6 +67,11 @@
             <artifactId>org.wso2.carbon.governance.registry.extensions</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-codegen-cli</artifactId>
+            <version>2.1.5</version>
+        </dependency>
+        <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
             <exclusions>

@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.String;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -107,6 +108,16 @@ public class Generate implements Runnable {
     @Option(name = {"--library"}, title = "library", description = CodegenConstants.LIBRARY_DESC)
     private String library;
 
+    public void setConfig(String inputSpec,String inputLang,String outputPath){
+        spec = inputSpec;
+        lan = inputLang;
+        output = outputPath;
+    }
+
+    public void setConfig(String inputSpec,String inputLang){
+        spec = inputSpec;
+        lan = inputLang;
+    }
     @Override
     public void run() {
 

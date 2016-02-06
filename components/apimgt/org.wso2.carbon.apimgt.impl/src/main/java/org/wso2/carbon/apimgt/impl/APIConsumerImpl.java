@@ -98,7 +98,6 @@ class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
         readTagCacheConfigs();
         this.apimRegistryService = apimRegistryService;
     }
-
     private void readTagCacheConfigs() {
         APIManagerConfiguration config = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().
                 getAPIManagerConfiguration();
