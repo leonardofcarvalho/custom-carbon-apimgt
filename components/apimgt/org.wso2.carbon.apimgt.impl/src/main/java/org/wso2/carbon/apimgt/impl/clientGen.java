@@ -31,36 +31,26 @@ import io.swagger.codegen.CliOption;
  * Created by randika on 2/1/16.
  */
 public class clientGen{
-    public void sdkGeneration(String appName, String sdkLanguage,String userName, String groupId)
-            throws RegistryException, APIManagementException, IOException {
+    public File sdkGeneration(String appName, String sdkLanguage,String userName, String groupId)
+            throws RegistryException, APIManagementException, IOException, InterruptedException {
         Subscriber currentSubscriber = null;
         Set<SubscribedAPI> APISet;
         String resourcePath = null;
         APIIdentifier api;
         String swagger="failed";
-        String path="none";
-        String uuid="none";
-        String parentpath ="none";
-        String permPath = "none";
-          // APIConsumerImpl consumer = new APIConsumerImpl();
-        //APIConsumer consumer = APIManagerFactory.getInstance().getAPIConsumer(userName);
         APIConsumerImpl consumer =  (APIConsumerImpl)APIManagerFactory.getInstance().getAPIConsumer(userName);
             currentSubscriber = ApiMgtDAO.getSubscriber(userName);
             ApiMgtDAO DAO = new ApiMgtDAO();
             System.out.println(currentSubscriber.getName());
             APISet=DAO.getSubscribedAPIs(currentSubscriber,appName,groupId);
             System.out.println(APISet.size());
-           File file = null;
+            File file = null;
+        String fileSeperator = "resources" + File.separator + "swaggerCodegen" +File.separator;
         for (Iterator<SubscribedAPI> it = APISet.iterator(); it.hasNext(); ) {
                 SubscribedAPI f = it.next();
                 resourcePath = APIUtil.getSwagger20DefinitionFilePath(f.getApiId().getApiName(),f.getApiId().getVersion(),f.getApiId().getProviderName());
-                //swagger = APIManagerFactory.getInstance().getAPIConsumer(userName).getSwagger20Definition(f.getApiId());
-               // System.out.println(swagger);
                 if (consumer.registry.resourceExists(resourcePath + APIConstants.API_DOC_2_0_RESOURCE_NAME)) {
                     swagger = consumer.definitionFromSwagger20.getAPIDefinition(f.getApiId(),consumer.registry);
-//                    path = consumer.registry.get(resourcePath + APIConstants.API_DOC_2_0_RESOURCE_NAME).getPath();
-//                    uuid=consumer.registry.getRegistryContext().getBasePath();
-//                    parentpath = consumer.registry.getRegistryContext().getRegistryRoot();
                     file = new File("resources/swaggerCodegen/swagger.json");
                     if (!file.exists()) {
                         file.createNewFile();
@@ -70,21 +60,15 @@ public class clientGen{
                     bw.write(swagger);
                     bw.close();
 
+                    ProcessBuilder pb = new ProcessBuilder("sh","resources/swaggerCodegen/generate.sh");
+                    //ProcessBuilder pb = new ProcessBuilder(command);
+                    Process p = pb.start();     // Start the process.
+                    p.waitFor();
                 }
 
 
-//                System.out.println(swagger);
-            //System.out.println(path);
             }
-//        ClientOpts clientOpts = new ClientOpts();
-//       // clientOpts.setOutputDirectory("/home/randika/Documents/WSO2_stuff/wso2am-1.10.1-SNAPSHOT/bin");
-//        clientOpts.setTarget("java");
-//        clientOpts.setUri("http://petstore.swagger.io/v2/swagger.json");
-//        ClientOptInput clientOptInput = new ClientOptInput();
-//        clientOptInput.setOpts(clientOpts);
-//        Generate generate = new Generate();
-//        generate.run();
-//        System.out.println(path);
-//        uuid=consumer.registry.getRegistryContext().getBasePath();
+            file = new File("resources/swaggerCodegen/swagger-codegen-cli.jar");
+            return file;
         }
 }
