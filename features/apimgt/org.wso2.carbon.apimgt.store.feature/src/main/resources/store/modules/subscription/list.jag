@@ -1,4 +1,5 @@
 <%
+include("/jagg/jagg.jag");
 var getAllSubscriptions = function (username, selectedAppName, startSubIndex, endSubIndex)  {
     var result,
             log = new Log(),
@@ -74,8 +75,17 @@ var generateClientSdk = function (appName,language,userName,groupId){
     var sdkGen = Packages.org.wso2.carbon.apimgt.impl.clientGen;
     var generator = new sdkGen();
     <!--window.open("wso2.com");-->
-    generator.sdkGeneration(appName,language,userName,groupId);
+    var object = generator.sdkGeneration(appName,language,userName,groupId);
+    if(object == null){
+        response.status = 500;
+    }else{
+        response.contentType = "application/force-download";
+        response.addHeader("Content-Disposition","attachment; filename = \""+object.name+"\"");
+        print(object);
+        new Log().info("++++++++++++++ : " + object);
+    }
     return {
+        archive:object,
         error:false
     };
 };

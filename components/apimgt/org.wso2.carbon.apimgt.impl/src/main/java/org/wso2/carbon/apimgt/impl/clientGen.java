@@ -38,6 +38,8 @@ public class clientGen{
         String resourcePath = null;
         APIIdentifier api;
         String swagger="failed";
+        ProcessBuilder pb;
+        Process p;
         APIConsumerImpl consumer =  (APIConsumerImpl)APIManagerFactory.getInstance().getAPIConsumer(userName);
             currentSubscriber = ApiMgtDAO.getSubscriber(userName);
             ApiMgtDAO DAO = new ApiMgtDAO();
@@ -45,7 +47,12 @@ public class clientGen{
             APISet=DAO.getSubscribedAPIs(currentSubscriber,appName,groupId);
             System.out.println(APISet.size());
             File file = null;
-        String fileSeperator = "resources" + File.separator + "swaggerCodegen" +File.separator;
+           String[] commandsToGen =  new String[4];
+           String[] commandsToZip =  new String[3];
+        commandsToGen[0]="sh";
+        commandsToGen[1]="resources/swaggerCodegen/generate.sh";
+        commandsToZip[0]="sh";
+        commandsToZip[1]="resources/swaggerCodegen/toZip.sh";
         for (Iterator<SubscribedAPI> it = APISet.iterator(); it.hasNext(); ) {
                 SubscribedAPI f = it.next();
                 resourcePath = APIUtil.getSwagger20DefinitionFilePath(f.getApiId().getApiName(),f.getApiId().getVersion(),f.getApiId().getProviderName());
@@ -59,16 +66,20 @@ public class clientGen{
                     BufferedWriter bw = new BufferedWriter(fw);
                     bw.write(swagger);
                     bw.close();
-
-                    ProcessBuilder pb = new ProcessBuilder("sh","resources/swaggerCodegen/generate.sh");
-                    //ProcessBuilder pb = new ProcessBuilder(command);
-                    Process p = pb.start();     // Start the process.
+                    commandsToGen[2]=f.getApiId().getApiName();
+                    commandsToGen[3]=appName;
+                    pb = new ProcessBuilder(commandsToGen);
+                    p = pb.start();     // Start the process.
                     p.waitFor();
                 }
 
 
             }
-            file = new File("resources/swaggerCodegen/swagger-codegen-cli.jar");
+            commandsToZip[2]=appName;
+            pb = new ProcessBuilder(commandsToZip);
+            p = pb.start();     // Start the process.
+            p.waitFor();
+            file = new File("resources/swaggerCodegen/"+appName+".zip");
             return file;
         }
 }

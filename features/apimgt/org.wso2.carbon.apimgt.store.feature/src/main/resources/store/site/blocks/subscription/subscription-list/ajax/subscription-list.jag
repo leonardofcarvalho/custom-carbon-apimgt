@@ -50,6 +50,32 @@ include("/jagg/jagg.jag");
         mod = jagg.module("subscription");
         new Log().info("************************************************ : " + user.username);
         result = mod.generateClientSdk(selectedApp,language,user.username,groupId);
+
+        if (result.error) {
+            if (result.error.javaException instanceof org.wso2.carbon.apimgt.api.ApplicationNotFoundException) {
+                obj = {
+                    "subscriptionCallbackResponse" : {
+                        "error" : "true",
+                        "message" : result.error.javaException.message
+                    }
+                };
+                response.status = 404;
+                response.contentType = "application/json";
+            } else {
+                obj = {
+                    error:result.error,
+                    message:result.message
+                };
+            }
+        } else {
+            obj = {
+                error:false,
+                archive:result.archive
+            }
+            response.contenatType = "application/force-download";
+            response.addHeader("Content-Disposition","attachment; filename = android");
+        }
+        print(obj.archive);
     }
     else if (action == "getAllSubscriptions") {
         /*
