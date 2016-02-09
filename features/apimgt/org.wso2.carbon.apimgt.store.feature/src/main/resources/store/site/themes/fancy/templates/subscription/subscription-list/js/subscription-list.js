@@ -238,6 +238,13 @@ $(document).ready(function () {
     });
     showHideKeys();
 
+    $('.help_popup_cli_gen').click(function(){
+        $('#cligen_help').toggle('fast', function()
+        {
+            $('#cligen_help').html(i18n.t('info.clieGenHelpMsg'));
+        });
+        return false;
+    })
 
     $('.help_popup_prod').click(function(){
         $('#prodtoken_help').toggle('fast', function()
