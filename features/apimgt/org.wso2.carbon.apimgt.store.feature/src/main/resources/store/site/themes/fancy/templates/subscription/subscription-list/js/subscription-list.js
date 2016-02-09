@@ -1,46 +1,51 @@
 function showHideKeys(){
 
-        if($('#showHideKeys').is(':checked')){
-            $('.keyValues').each(function(){
-                $(this).html($(this).attr('data-value'));
-            });
-        }else{
-            $('.keyValues').each(function(){
-                var len = $(this).attr('data-value').length;
-                $(this).html(new Array(len + 1).join( '*' ));
-            });
-        }
+    if($('#showHideKeys').is(':checked')){
+        $('.keyValues').each(function(){
+            $(this).html($(this).attr('data-value'));
+        });
+    }else{
+        $('.keyValues').each(function(){
+            var len = $(this).attr('data-value').length;
+            $(this).html(new Array(len + 1).join( '*' ));
+        });
     }
+}
+
 function generateAndroidSdk(app) {
-    //window.open("wso2.com");
+    var flag = true;
     jagg.post("/site/blocks/subscription/subscription-list/ajax/subscription-list.jag", {
         action:"generateSdk",
         selectedApp:app,
         language:"android",
     }, function (result) {
         if (!result.error) {
-            location.reload();
+            window.location.href = "download.jag?fileName="+result.appName+".zip";
+//            location.reload();
         } else {
             jagg.message({content:result.message,type:"error"});
         }
     }, "json");
 }
 
+
+
+
 $(document).ready(function () {
 
     $('#scopeSelectButtonPop').click(function() {
-    	var selected = ($('.CheckboxProd:checked').map(function() {
-    	    return this.value;
-    	}).get().join(' '));
-    	$('#prodScopeInput').attr('value', selected);
-    	});
+        var selected = ($('.CheckboxProd:checked').map(function() {
+            return this.value;
+        }).get().join(' '));
+        $('#prodScopeInput').attr('value', selected);
+    });
 
     $('#scopeSelectButtonPopSand').click(function() {
-    	var selected = ($('.CheckboxSand:checked').map(function() {
-    	    return this.value;
-    	}).get().join(' '));
-    	$('#sandScopeInput').attr('value', selected);
-    	});
+        var selected = ($('.CheckboxSand:checked').map(function() {
+            return this.value;
+        }).get().join(' '));
+        $('#sandScopeInput').attr('value', selected);
+    });
 
     $.ajaxSetup({
         contentType: "application/x-www-form-urlencoded; charset=utf-8"
@@ -155,7 +160,7 @@ $(document).ready(function () {
             authorizedDomains: authoDomains,
             validityTime: validityTime,
             tokenScope:tokenScope,
-	    //jsonParams: oJsonParams
+            //jsonParams: oJsonParams
         }, function (result) {
             if (!result.error) {
                 location.reload();
@@ -167,7 +172,7 @@ $(document).ready(function () {
         $(this).html(i18n.t('info.wait'));
     });
 
- $('.app-create-key-button').click(function () {
+    $('.app-create-key-button').click(function () {
         var elem = $(this);
         var i = elem.attr("iteration");
         var keyType = elem.attr("data-keytype");
@@ -193,7 +198,7 @@ $(document).ready(function () {
             callbackUrl:elem.attr("data-callbackUrl"),
             authorizedDomains:authoDomains,
             validityTime:validityTime,
-	        retryAfterFailure:true
+            retryAfterFailure:true
         }, function (result) {
             if (!result.error) {
                 location.reload();
@@ -206,7 +211,7 @@ $(document).ready(function () {
     });
 
 
-       $('.key-table-content textarea').focus(function() {
+    $('.key-table-content textarea').focus(function() {
         var $this = $(this);
         $this.select();
 
@@ -225,9 +230,9 @@ $(document).ready(function () {
 
     $('#showHideKeys').click(function(){
         if($('#showHideKeys').is(':checked')){
-           $.cookie('showHideKeys','show');
+            $.cookie('showHideKeys','show');
         }else{
-           $.cookie('showHideKeys','hide');
+            $.cookie('showHideKeys','hide');
         }
         showHideKeys();
     });
@@ -235,20 +240,20 @@ $(document).ready(function () {
 
 
     $('.help_popup_prod').click(function(){
-	        $('#prodtoken_help').toggle('fast', function()
-	        {
-	            $('#prodtoken_help').html(i18n.t('info.tokenHelpMsg'));
-	        });
-	        return false;
-	    })
+        $('#prodtoken_help').toggle('fast', function()
+        {
+            $('#prodtoken_help').html(i18n.t('info.tokenHelpMsg'));
+        });
+        return false;
+    })
 
-   $('.help_popup_sand').click(function(){
-	 $('#sandtoken_help').toggle('fast', function()
-	 {
-	  $('#sandtoken_help').html(i18n.t('info.tokenHelpMsg'));
-	   });
-	    return false;
-	 });
+    $('.help_popup_sand').click(function(){
+        $('#sandtoken_help').toggle('fast', function()
+        {
+            $('#sandtoken_help').html(i18n.t('info.tokenHelpMsg'));
+        });
+        return false;
+    });
 
     $('.update_domain_popup_prod').click(function () {
         $('#update_help_prod').toggle('fast', function () {
@@ -278,10 +283,10 @@ $(document).ready(function () {
         return false;
     });
 
-   $('#btnProvideKeyProduction').click(function () {
-       $('.cDivParentOfManualAuthAppCreateProduction').show();
-       $('.cDivDefaultBtnSet').hide();
-   });
+    $('#btnProvideKeyProduction').click(function () {
+        $('.cDivParentOfManualAuthAppCreateProduction').show();
+        $('.cDivDefaultBtnSet').hide();
+    });
 
     $('#btnProvideKeySandBox').click(function () {
         $('.cDivParentOfManualAuthAppCreateSandBox').show();
@@ -457,21 +462,21 @@ var regenerate=function(appName,keyType,i,btn,div,clientId,clientSecret) {
 
                     //generate scopeTxtBox and append
                     var scopeTxtDiv=    '<div class="row-fluid keys">'+
-                                        '<div class="span3">'+
-                                        '<b>Scope:</b>'+
-                                        '</div>'+
-                                        '<div class="span9">'+
-                                        '<div class="token">'+
-                                        '<span class="accessTokenScopeDisplayPro keyValues" id="prodAccessScope" data-value="'+generatedScopesNames+'">'+generatedScopesNames+'</span>'+
-                                        '</div>'+
-                                        '</div>'+
-                                        '</div>';
-                   tokenTxtBox.before(scopeTxtDiv);
+                        '<div class="span3">'+
+                        '<b>Scope:</b>'+
+                        '</div>'+
+                        '<div class="span9">'+
+                        '<div class="token">'+
+                        '<span class="accessTokenScopeDisplayPro keyValues" id="prodAccessScope" data-value="'+generatedScopesNames+'">'+generatedScopesNames+'</span>'+
+                        '</div>'+
+                        '</div>'+
+                        '</div>';
+                    tokenTxtBox.before(scopeTxtDiv);
                 }
             }else{  // if Scope is not selected
                 if(scopeTxtBox.length>0){
                     //remove scopeTxtBox if Scope is not selected
-                   tokenTxtBox.prev().remove();
+                    tokenTxtBox.prev().remove();
                 }
             }
 
@@ -497,12 +502,12 @@ var regenerate=function(appName,keyType,i,btn,div,clientId,clientSecret) {
             }
 
             /*
-            if (keyType == 'PRODUCTION') {
-                $('#allowedDomainsPro').val(domainResultVal);
-            } else {
-                $('#allowedDomainsSand').val(domainResultVal);
-            }
-            */
+             if (keyType == 'PRODUCTION') {
+             $('#allowedDomainsPro').val(domainResultVal);
+             } else {
+             $('#allowedDomainsSand').val(domainResultVal);
+             }
+             */
 
         } else {
             jagg.message({content:result.message,type:"error"});
@@ -540,22 +545,22 @@ var updateAccessAllowDomains = function(appName, keyType, i, btn) {
     if(/([<>\"\'])/g.test(authorizedDomainsEdit)){
         jagg.message({content:"Input contains one or more illegal characters",type:"error"});
     }else{
-    if(authorizedDomainsEdit == ''){$('#allowedDomainsPro').val('ALL')}
-    jagg.post("/site/blocks/subscription/subscription-add/ajax/subscription-add.jag", {
-        action:"updateAccessAllowDomains",
-        application:appName,
-        keytype:keyType,
-        oldAccessToken:oldAccessToken,
-        authorizedDomains:authorizedDomainsEdit
-    }, function (result) {
-        if (!result.error) {
-            elem.html('Update Domains').removeAttr('disabled');
-            elem.next().show();
-            setTimeout(function(){elem.next().hide()},3000);
-        } else {
-            jagg.message({content:result.message,type:"error"});
-        }
-    }, "json");
+        if(authorizedDomainsEdit == ''){$('#allowedDomainsPro').val('ALL')}
+        jagg.post("/site/blocks/subscription/subscription-add/ajax/subscription-add.jag", {
+            action:"updateAccessAllowDomains",
+            application:appName,
+            keytype:keyType,
+            oldAccessToken:oldAccessToken,
+            authorizedDomains:authorizedDomainsEdit
+        }, function (result) {
+            if (!result.error) {
+                elem.html('Update Domains').removeAttr('disabled');
+                elem.next().show();
+                setTimeout(function(){elem.next().hide()},3000);
+            } else {
+                jagg.message({content:result.message,type:"error"});
+            }
+        }, "json");
     }
 }
 
@@ -628,21 +633,21 @@ function removeSubscription(apiName, version, provider,  applicationId, delLink)
     $('#messageModal a.btn-primary').html(i18n.t('info.yes'));
     $('#messageModal a.btn-other').html(i18n.t('info.no'));
     $('#messageModal a.btn-primary').click(function() {
-    jagg.post("/site/blocks/subscription/subscription-remove/ajax/subscription-remove.jag", {
-        action:"removeSubscription",
-        name:apiName,
-        version:version,
-        provider:provider,
-	 applicationId:applicationId
-       }, function (result) {
-        if (!result.error) {
-            $('#messageModal').modal("hide");
-            location.href = '?removeSession=true&'+urlPrefix;
-        } else {
+        jagg.post("/site/blocks/subscription/subscription-remove/ajax/subscription-remove.jag", {
+            action:"removeSubscription",
+            name:apiName,
+            version:version,
+            provider:provider,
+            applicationId:applicationId
+        }, function (result) {
+            if (!result.error) {
+                $('#messageModal').modal("hide");
+                location.href = '?removeSession=true&'+urlPrefix;
+            } else {
 
-            jagg.message({content:result.message,type:"error"});
-        }
-    }, "json"); });
+                jagg.message({content:result.message,type:"error"});
+            }
+        }, "json"); });
     $('#messageModal a.btn-other').click(function() {
         return;
     });

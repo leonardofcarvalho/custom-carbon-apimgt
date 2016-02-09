@@ -3,6 +3,9 @@ package org.wso2.carbon.apimgt.impl;
 import io.swagger.codegen.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.ScriptableObject;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
@@ -20,18 +23,22 @@ import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.registry.core.*;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import org.mozilla.javascript.*;
+
+import java.util.*;
+
 import org.wso2.carbon.registry.core.RegistryConstants;
 import java.io.*;
 import io.swagger.codegen.cmd.Generate;
 import io.swagger.codegen.CliOption;
+import sun.org.mozilla.javascript.serialize.ScriptableInputStream;
+import sun.org.mozilla.javascript.tools.shell.Global;
+
 /**
  * Created by randika on 2/1/16.
  */
 public class clientGen{
-    public File sdkGeneration(String appName, String sdkLanguage,String userName, String groupId)
+    public String sdkGeneration(String appName, String sdkLanguage,String userName, String groupId)
             throws RegistryException, APIManagementException, IOException, InterruptedException {
         Subscriber currentSubscriber = null;
         Set<SubscribedAPI> APISet;
@@ -79,7 +86,6 @@ public class clientGen{
             pb = new ProcessBuilder(commandsToZip);
             p = pb.start();     // Start the process.
             p.waitFor();
-            file = new File("resources/swaggerCodegen/"+appName+".zip");
-            return file;
+            return appName;
         }
 }

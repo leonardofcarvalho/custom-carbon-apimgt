@@ -21,10 +21,10 @@ include("/jagg/jagg.jag");
     var validation_errors = jagg.validateInputs(validation);
 
     if(validation_errors != true){
-            print({
-                error:true,
-                message: msg.error.invalidInputs(validation_errors)
-            });        
+        print({
+            error:true,
+            message: msg.error.invalidInputs(validation_errors)
+        });
     } else if (action == "generateSdk"){
         if(request.getParameter('selectedApp')!=null){
             selectedApp = request.getParameter('selectedApp');
@@ -32,7 +32,7 @@ include("/jagg/jagg.jag");
         //else if we have selected app in session we will use it.
         // ** Should not use session to get selected value
         else if(session.get('selectedApp')!=null){
-         selectedApp = session.get('selectedApp');
+            selectedApp = session.get('selectedApp');
         }
         //if not pass blank string because host object is waiting for string args..
         else{
@@ -68,27 +68,26 @@ include("/jagg/jagg.jag");
                 };
             }
         } else {
+
             obj = {
                 error:false,
-                archive:result.archive
+                appName:result.appName
             }
-            response.contenatType = "application/force-download";
-            response.addHeader("Content-Disposition","attachment; filename = android");
         }
-        print(obj.archive);
+        print(obj);
     }
     else if (action == "getAllSubscriptions") {
         /*
          This will be called when the user calls listAllSubscription via the Rest API.
-        */
+         */
         if (!user) {
             if(!ssoEnabled){
-		print({
-		    error:true,
+                print({
+                    error:true,
                     message:msg.error.loginRequired(action)
-            	});
-	    }
-	    return;
+                });
+            }
+            return;
         }
         username = user.username;
 
@@ -99,18 +98,18 @@ include("/jagg/jagg.jag");
         //else if we have selected app in session we will use it.
         // ** Should not use session to get selected value
         /*else if(session.get('selectedApp')!=null){
-            selectedApp = session.get('selectedApp');
-        }*/ 
+         selectedApp = session.get('selectedApp');
+         }*/
         //if not pass blank string because host object is waiting for string args..
         else{
             selectedApp= "";
         }
 
-		page = request.getParameter("page");
+        page = request.getParameter("page");
         if (page == null) {
-				page = 1;
-		}
-     
+            page = 1;
+        }
+
         mod = jagg.module("subscription");
         var groupId = session.get("groupId");
 
@@ -156,15 +155,15 @@ include("/jagg/jagg.jag");
         }
         print(obj);
     } else if (action == "getSubscriptionByApplication") {
-	var appname = request.getParameter("app");
+        var appname = request.getParameter("app");
         if (!user) {
             if(!ssoEnabled){
-		print({
-		    error:true,
+                print({
+                    error:true,
                     message:msg.error.loginRequired(action)
-            	});
-	    }
-	    return;
+                });
+            }
+            return;
         }
         username = user.username;
 
@@ -200,12 +199,12 @@ include("/jagg/jagg.jag");
 
         if (!user) {
             if (!ssoEnabled) {
-        		print({
-        		    error:true,
-        		    message:msg.error.loginRequired(action)
-                    });
-        	}
-        	return;
+                print({
+                    error:true,
+                    message:msg.error.loginRequired(action)
+                });
+            }
+            return;
         }
         username = user.username;
 
@@ -216,9 +215,9 @@ include("/jagg/jagg.jag");
         if ((apiName != null) && (apiVersion != null) && (provider != null) ) {
 
             var api = {};
-        	api.name = apiName;
-        	api.version = apiVersion;
-        	api.provider = provider;
+            api.name = apiName;
+            api.version = apiVersion;
+            api.provider = provider;
 
             mod = jagg.module("subscription");
             result = mod.getAPISubscriptions(api, username);
