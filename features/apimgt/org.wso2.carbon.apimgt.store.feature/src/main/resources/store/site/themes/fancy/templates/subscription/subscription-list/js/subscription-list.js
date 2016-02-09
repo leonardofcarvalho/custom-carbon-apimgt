@@ -20,7 +20,7 @@ function generateAndroidSdk(app) {
         language:"android",
     }, function (result) {
         if (!result.error) {
-            window.location.href = "download.jag?fileName="+result.appName+".zip";
+            window.location.href = "../themes/fancy/templates/subscription/subscription-list/js/download.jag?fileName="+result.appName+".zip";
 //            location.reload();
         } else {
             jagg.message({content:result.message,type:"error"});
