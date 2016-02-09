@@ -72,13 +72,21 @@ var getAPISubscriptionsForApplication = function (username, appName) {
 };
 
 var generateClientSdk = function (appName,language,userName,groupId){
-    var sdkGen = Packages.org.wso2.carbon.apimgt.impl.clientGen;
+    var sdkGen = Packages.org.wso2.carbon.apimgt.impl.ApiCliManager;
     var generator = new sdkGen();
     var object = null;
     var appName = generator.sdkGeneration(appName,language,userName,groupId);
-    return {
-        appName:appName,
-        error:false
-    };
+    if(appName!=null){
+        return {
+            appName:appName,
+            error:false
+        };
+    }
+    else{
+        return {
+            error:true
+        };
+    }
+
 };
 %>

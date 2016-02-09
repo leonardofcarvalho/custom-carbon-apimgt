@@ -48,7 +48,6 @@ include("/jagg/jagg.jag");
 
         var groupId = session.get("groupId");
         mod = jagg.module("subscription");
-        new Log().info("************************************************ : " + user.username);
         result = mod.generateClientSdk(selectedApp,language,user.username,groupId);
 
         if (result.error) {
