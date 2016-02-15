@@ -17,51 +17,55 @@
 */
 
 package org.wso2.carbon.apimgt.impl;
+
 import org.wso2.carbon.apimgt.api.APIManagementException;
-import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
-import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
-import org.wso2.carbon.apimgt.api.model.Subscriber;
-import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
+import org.wso2.carbon.apimgt.api.model.Subscriber;
+import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
+import java.util.Set;
+import java.util.Iterator;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 
-import java.util.*;
-import java.io.*;
 
 
-/**
+/*
  * This class is used to generate sdks for subscribed APIs
  */
-public class APIClientGenerationManager{
-    public String sdkGeneration(String appName, String sdkLanguage,String userName, String groupId)
+public class APIClientGenerationManager {
+    public String sdkGeneration(String appName, String sdkLanguage, String userName, String groupId)
             throws RegistryException, APIManagementException, IOException, InterruptedException {
         Subscriber currentSubscriber = null;
-        Set<SubscribedAPI> APISet;
+        Set<SubscribedAPI> apiSet;
         String resourcePath = null;
         APIIdentifier api;
         String swagger;
         ProcessBuilder processBuilder;
         Process processShellCommands;
-        APIConsumerImpl consumer =  (APIConsumerImpl)APIManagerFactory.getInstance().getAPIConsumer(userName);
+        APIConsumerImpl consumer =  (APIConsumerImpl) APIManagerFactory.getInstance().getAPIConsumer(userName);
         currentSubscriber = ApiMgtDAO.getSubscriber(userName);
-        ApiMgtDAO DAO = new ApiMgtDAO();
-        System.out.println(currentSubscriber.getName());
-        APISet=DAO.getSubscribedAPIs(currentSubscriber,appName,groupId);
-        System.out.println(APISet.size());
+        ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+        apiSet = apiMgtDAO.getSubscribedAPIs(currentSubscriber, appName , groupId);
         File spec = null;
         String[] commandsToGen =  new String[4];
         String[] commandsToZip =  new String[3];
-        commandsToGen[0]="sh";
-        commandsToGen[1]="resources/swaggerCodegen/generate.sh";
-        commandsToZip[0]="sh";
-        commandsToZip[1]="resources/swaggerCodegen/toZip.sh";
-        for (Iterator<SubscribedAPI> apiIterator = APISet.iterator(); apiIterator.hasNext(); ) {
+        commandsToGen[0] = "sh";
+        commandsToGen[1] = "resources/swaggerCodegen/generate.sh";
+        commandsToZip[0] = "sh";
+        commandsToZip[1] = "resources/swaggerCodegen/toZip.sh";
+        for (Iterator<SubscribedAPI> apiIterator = apiSet.iterator(); apiIterator.hasNext(); ) {
             SubscribedAPI subscribedAPI = apiIterator.next();
             resourcePath = APIUtil.getSwagger20DefinitionFilePath(subscribedAPI.getApiId().getApiName(),
                     subscribedAPI.getApiId().getVersion(), subscribedAPI.getApiId().getProviderName());
             if (consumer.registry.resourceExists(resourcePath + APIConstants.API_DOC_2_0_RESOURCE_NAME)) {
-                swagger = consumer.definitionFromSwagger20.getAPIDefinition(subscribedAPI.getApiId(),consumer.registry);
+                swagger = consumer.definitionFromSwagger20.getAPIDefinition(subscribedAPI.getApiId(), consumer.registry);
                 spec = new File("resources/swaggerCodegen/swagger.json");
                 if (!spec.exists()) {
                     spec.createNewFile();
@@ -70,8 +74,8 @@ public class APIClientGenerationManager{
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 bufferedWriter.write(swagger);
                 bufferedWriter.close();
-                commandsToGen[2]=subscribedAPI.getApiId().getApiName();
-                commandsToGen[3]=appName;
+                commandsToGen[2] = subscribedAPI.getApiId().getApiName();
+                commandsToGen[3] = appName;
                 processBuilder = new ProcessBuilder(commandsToGen);
                 processShellCommands = processBuilder.start();     // Start the process.
                 processShellCommands.waitFor();
@@ -79,7 +83,7 @@ public class APIClientGenerationManager{
 
 
         }
-        commandsToZip[2]=appName;
+        commandsToZip[2] = appName;
         processBuilder = new ProcessBuilder(commandsToZip);
         processShellCommands = processBuilder.start();     // Start the process.
         processShellCommands.waitFor();
