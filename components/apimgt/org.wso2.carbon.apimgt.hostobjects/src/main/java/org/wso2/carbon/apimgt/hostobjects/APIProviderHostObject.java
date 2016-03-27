@@ -18,6 +18,11 @@
 
 package org.wso2.carbon.apimgt.hostobjects;
 
+import io.swagger.models.Operation;
+import io.swagger.models.Path;
+import io.swagger.models.Swagger;
+import io.swagger.models.auth.SecuritySchemeDefinition;
+import io.swagger.parser.SwaggerParser;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
@@ -480,10 +485,9 @@ public class APIProviderHostObject extends ScriptableObject {
             } catch (UserStoreException e) {
                 handleException("Error while reading tenant information ", e);
             }
-            
 
-            //Save swagger in the registry
-            apiProvider.saveSwagger20Definition(api.getId(),(String) apiData.get("swagger", apiData));
+            apiProvider.saveSwagger20Definition(api.getId(),
+                    addSecurityDef((String) apiData.get("swagger", apiData), scopes));
         }
 
         // removing scopes from cache
@@ -4777,5 +4781,97 @@ public class APIProviderHostObject extends ScriptableObject {
             }
         }
         return result;
+    }
+
+
+    public static String addSecurityDef(String spec,Set<Scope> scopes){
+
+
+        List<String> scopeNames = new ArrayList<String>();
+        Swagger swagger = new SwaggerParser().parse(spec);
+        Map<String,Path> paths = swagger.getPaths();
+        Operation operation;
+        APISecuritySchemeDefinition apiSecuritySchemeDefinition = new APISecuritySchemeDefinition();
+        apiSecuritySchemeDefinition.setType("oauth2");
+        apiSecuritySchemeDefinition.setAuthorizationUrl(getAuthorizationUrl());
+        apiSecuritySchemeDefinition.setFlow("implicit");
+
+        for (Scope s : scopes) {
+            scopeNames.add(s.getName());
+            apiSecuritySchemeDefinition.setScopes(s.getName(),s.getDescription());
+        }
+
+        String securityName= swagger.getInfo().getTitle().toLowerCase()+"_oauth";
+
+        for (Map.Entry<String, Path> entry : paths.entrySet()) {
+            operation = paths.get(entry.getKey()).getGet();
+            if (operation!= null){
+                paths.get(entry.getKey()).getGet().addSecurity(securityName,scopeNames);
+            }
+
+            operation = paths.get(entry.getKey()).getPatch();
+            if (operation!= null){
+                paths.get(entry.getKey()).getPatch().addSecurity(securityName,scopeNames);
+            }
+
+            operation = paths.get(entry.getKey()).getDelete();
+            if (operation!= null){
+                paths.get(entry.getKey()).getDelete().addSecurity(securityName,scopeNames);
+            }
+
+            operation = paths.get(entry.getKey()).getHead();
+            if (operation!= null){
+                paths.get(entry.getKey()).getHead().addSecurity(securityName,scopeNames);
+            }
+
+            operation = paths.get(entry.getKey()).getPost();
+            if (operation!= null){
+                paths.get(entry.getKey()).getPost().addSecurity(securityName,scopeNames);
+            }
+
+            operation = paths.get(entry.getKey()).getPut();
+            if (operation!= null){
+                paths.get(entry.getKey()).getPut().addSecurity(securityName,scopeNames);
+            }
+
+            operation = paths.get(entry.getKey()).getOptions();
+            if (operation!= null){
+                paths.get(entry.getKey()).getOptions().addSecurity(securityName,scopeNames);
+            }
+
+        }
+
+        Map<String,SecuritySchemeDefinition> securityDefMap = new HashMap<String, SecuritySchemeDefinition>();
+
+        securityDefMap.put(securityName,apiSecuritySchemeDefinition);
+
+        swagger.setSecurityDefinitions(securityDefMap);
+
+        swagger.setPaths(paths);
+        return Json.pretty(swagger);
+    }
+
+    private static String getAuthorizationUrl(){
+
+        APIManagerConfiguration config = HostObjectComponent.getAPIManagerConfiguration();
+        Map<String, Environment> environments = config.getApiGatewayEnvironments();
+
+        for (Environment environment : environments.values()) {
+            String apiGatewayEndpoints = environment.getApiGatewayEndpoint();
+            if(environment.isShowInConsole()){
+                List<String> urlsList = new ArrayList<String>();
+                urlsList.addAll(Arrays.asList(apiGatewayEndpoints.split(",")));
+                ListIterator<String> it = urlsList.listIterator();
+
+                while (it.hasNext()) {
+                    String url = it.next();
+                    if (url != null && url.startsWith("https:")) {
+                        return url+"/token";
+                    }
+                }
+            }
+
+        }
+        return null;
     }
 }
